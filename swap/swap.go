@@ -30,9 +30,15 @@ func (s *Reader) Read(p []byte) (int, error) {
 
 // Swap the current reader with r. The next call to Read will
 // contain data from r instead of the previous reader.
+// If the current reader can be closed (ie implements io.Closer), it will be.
 func (s *Reader) Swap(r io.Reader) {
 	s.lock.Lock()
 	defer s.lock.Unlock()
+
+	// Close the current reader
+	if closer, ok := s.reader.(io.Closer); ok {
+		closer.Close()
+	}
 
 	s.reader = r
 }

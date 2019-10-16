@@ -5,8 +5,8 @@ import (
 )
 
 func TestSwap(t *testing.T) {
-	as := &bytes{'a'}
-	bs := &bytes{'b'}
+	as := &bytes{'a', 0}
+	bs := &bytes{'b', 0}
 
 	r := NewReader(as)
 
@@ -39,6 +39,13 @@ func TestSwap(t *testing.T) {
 	}
 
 	r.Swap(bs)
+	if as.closed != 1 {
+		t.Errorf("Expected as.closed = 1, got %v", as.closed)
+	}
+
+	if bs.closed != 0 {
+		t.Errorf("Expected bs.closed = 0, got %v", bs.closed)
+	}
 
 	read()
 	if str != "aab" {
@@ -51,6 +58,14 @@ func TestSwap(t *testing.T) {
 	}
 
 	r.Swap(as)
+	if as.closed != 1 {
+		t.Errorf("Expected as.closed = 1, got %v", as.closed)
+	}
+
+	if bs.closed != 1 {
+		t.Errorf("Expected bs.closed = 1, got %v", bs.closed)
+	}
+
 	read()
 	if str != "aabba" {
 		t.Errorf("Expected str = \"aabba\", got %#v", str)
@@ -76,7 +91,8 @@ var chunk = 1
 
 // bytes implements a reader that reads the same byte always.
 type bytes struct {
-	b byte
+	b      byte
+	closed int
 }
 
 // Read from bytes, returning the same bytes always.
@@ -91,4 +107,10 @@ func (b *bytes) Read(p []byte) (int, error) {
 	}
 
 	return n, nil
+}
+
+// Close the stream, does nothing for testing purposes.
+func (b *bytes) Close() error {
+	b.closed += 1
+	return nil
 }
