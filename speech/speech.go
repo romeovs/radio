@@ -8,5 +8,5 @@ import (
 
 // Say the text.
 func Say(text string) (io.ReadCloser, error) {
-	return exec.Command("espeak", text, "--stdout")
+	return exec.Command("espeak", text, "--stdout", "-p", "40", "-s", "160")
 }
