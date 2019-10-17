@@ -1,7 +1,6 @@
 package exec
 
 import (
-	"fmt"
 	"io"
 	"os/exec"
 )
@@ -48,12 +47,10 @@ func (cmd *Cmd) Read(p []byte) (int, error) {
 	n, err := cmd.stdout.Read(p)
 
 	if err != nil {
-		fmt.Println("STOPPING")
 		cmd.cmd.Wait()
 		return 0, err
 	}
 
-	fmt.Printf("read %s bytes\n", n)
 	return n, err
 }
 
