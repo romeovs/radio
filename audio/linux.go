@@ -2,4 +2,7 @@
 
 package audio
 
-var cmd = "aplay"
+var (
+	cmd  = "aplay"
+	args = []string{}
+)

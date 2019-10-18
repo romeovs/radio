@@ -2,4 +2,11 @@
 
 package audio
 
-var cmd = "paplay"
+var (
+	cmd  = "paplay"
+	args = []string{
+		"--raw",
+		"--fix-rate",
+		"--latency-msec=10",
+	}
+)
