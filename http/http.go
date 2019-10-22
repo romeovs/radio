@@ -80,3 +80,8 @@ func (s *Server) handleSelect(w http.ResponseWriter, r *http.Request) {
 
 	s.radio.Select(int(channel))
 }
+
+// Listen to the address and serve the server there.
+func (s *Server) Listen(addr string) {
+	http.ListenAndServe(addr, s)
+}
