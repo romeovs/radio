@@ -31,6 +31,7 @@ func Pipe(s io.Reader, name string, args ...string) (*Cmd, error) {
 
 	return &Cmd{
 		stdout: stdout,
+		stdin:  s,
 		cmd:    cmd,
 	}, nil
 }
@@ -38,6 +39,7 @@ func Pipe(s io.Reader, name string, args ...string) (*Cmd, error) {
 // Cmd wraps exec.Cmd
 type Cmd struct {
 	stdout io.ReadCloser
+	stdin  io.Reader
 	cmd    *exec.Cmd
 }
 
@@ -56,5 +58,11 @@ func (cmd *Cmd) Read(p []byte) (int, error) {
 
 // Close the underlying command.
 func (cmd *Cmd) Close() error {
+	if cmd.stdin != nil {
+		if c, ok := cmd.stdin.(io.Closer); ok {
+			c.Close()
+		}
+	}
+
 	return cmd.cmd.Wait()
 }
