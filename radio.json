@@ -1,0 +1,20 @@
+{
+  "say_channel_name": true,
+  "channels": [
+    {
+      "type": "webradio",
+      "name": "NTS Radio",
+      "url": "https://stream-relay-geo.ntslive.net/stream"
+    },
+    {
+      "type": "webradio",
+      "name": "Dublab",
+      "url": "http://dublab.out.airtime.pro:8000/dublab_a"
+    },
+    {
+      "type": "webradio",
+      "name": "The Word Radio",
+      "url": "http://thewordradio.out.airtime.pro:8000/thewordradio_a"
+    }
+  ]
+}
