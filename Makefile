@@ -28,3 +28,10 @@ bin/rpi/$(NAME):
 clean:
 	@$m "Cleaning..."
 	@rm -rf bin/*
+
+# Make hex helper
+hex: bin/hex
+
+bin/hex: tools/hex/main.go
+	@$m "Building hex..."
+	@go build -o bin/hex tools/hex/main.go
