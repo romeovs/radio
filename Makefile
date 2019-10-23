@@ -35,3 +35,8 @@ hex: bin/hex
 bin/hex: tools/hex/main.go
 	@$m "Building hex..."
 	@go build -o bin/hex tools/hex/main.go
+
+# Pack the system sounds
+sounds/bin.go: $(wildcard sounds/wav/*)
+	@$m "Packing sounds/wav..."
+	@go-bindata -nocompress -o sounds/bin.go $<
