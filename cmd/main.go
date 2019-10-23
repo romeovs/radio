@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 
 	"github.com/romeovs/radio/config"
@@ -10,15 +11,16 @@ import (
 
 var (
 	// configFile is the location of the config file.
-	configFile = "./radio.json"
+	configFile = flag.String("config", "./radio.json", "the location of the config file")
 )
 
 func main() {
-	cfg, err := config.Open(configFile)
+	flag.Parse()
+
+	cfg, err := config.Open(*configFile)
 	if err != nil {
 		log.Fatal(err)
 	}
-	_ = cfg
 
 	// Build radio.
 	radio := radio.NewRadio(cfg)
