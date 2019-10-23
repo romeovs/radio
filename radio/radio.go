@@ -6,6 +6,7 @@ import (
 
 	"github.com/romeovs/radio/audio"
 	"github.com/romeovs/radio/config"
+	"github.com/romeovs/radio/sounds"
 	"github.com/romeovs/radio/speech"
 	"github.com/romeovs/radio/swap"
 )
@@ -61,5 +62,9 @@ func (r *Radio) play(s io.Reader) {
 
 // Start starts playing the audio stream.
 func (r *Radio) Start() {
+	if r.Config.PlayStartupSound {
+		r.playall(sounds.Startup())
+	}
+
 	audio.Play(r.stream)
 }

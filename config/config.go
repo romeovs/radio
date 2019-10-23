@@ -6,6 +6,9 @@ type Config struct {
 	// said by the radio when switching channels.
 	SayChannelName bool `json:"say_channel_name"`
 
+	// PlayStartupSound should denotes whether or not a startup sound should be played.
+	PlayStartupSound bool `json:"startup_sound"`
+
 	// Channels are all the channels.
 	Channels []*Channel `json:"channels"`
 }

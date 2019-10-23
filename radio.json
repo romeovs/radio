@@ -1,5 +1,6 @@
 {
   "say_channel_name": true,
+  "startup_sound": true,
   "channels": [
     {
       "type": "webradio",
