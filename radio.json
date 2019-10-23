@@ -16,6 +16,11 @@
       "type": "webradio",
       "name": "The Word Radio",
       "url": "http://thewordradio.out.airtime.pro:8000/thewordradio_a"
+    },
+    {
+      "type": "airplay",
+      "name": "Airplay",
+      "airplay_name": "Radio Airplay"
     }
   ]
 }
