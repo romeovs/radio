@@ -28,36 +28,45 @@ func NewRadio(cfg *config.Config) *Radio {
 
 // Select a radio channel
 // This closes the previously playing channel
-func (r *Radio) Select(channel int) {
-	fmt.Printf("Trying %v\n", channel)
+func (r *Radio) Select(channel int) error {
 	ch := r.Config.Channel(channel)
 
 	if ch == nil {
 		// TODO: log error
-		fmt.Println("No channel found")
-		return
+		fmt.Printf("NO CHANNEL [%v] FOUND\n", channel)
+		return fmt.Errorf("Channel %v does not exist", channel)
 	}
 
+	fmt.Printf("SELECTING [%v] \"%s\"\n", channel, ch.Name)
 	if r.Config.SayChannelName {
-		if t, _ := speech.Say(ch.Name); t != nil {
-			// TODO: handle error
-			r.play(t)
+		t, err := speech.Say(ch.Name)
+		if err != nil {
+			fmt.Println("ERROR SPEAKING CHANNEL NAME \"%s\": %s", ch.Name, err)
+			return fmt.Errorf("Error saying channel name stream: %s", err)
 		}
+
+		r.playall(t)
 	}
 
-	fmt.Printf("Selecting %v: %s\n", channel, ch.Name)
 	s, err := stream(ch)
 	if err != nil {
-		fmt.Println("ERR:", err)
-		return
+		fmt.Println("ERROR OPENING STREAM:", err)
+		return fmt.Errorf("Error opening stream: %s", err)
 	}
 
 	r.play(s)
+	return nil
 }
 
 // play swaps the underlying stream to the new stream
 func (r *Radio) play(s io.Reader) {
-	r.stream.Swap(s)
+	r.stream.Swap(s, false)
+}
+
+// playall swaps the underlying stream to the new stream
+// and makes sure it gets played fully.
+func (r *Radio) playall(s io.Reader) {
+	r.stream.Swap(s, true)
 }
 
 // Start starts playing the audio stream.
