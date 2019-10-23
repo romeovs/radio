@@ -72,9 +72,9 @@ func (s *Reader) Swap(r io.Reader, all bool) {
 	defer s.lock.Unlock()
 
 	// Close the current reader
-	// if closer, ok := s.reader.(io.Closer); ok {
-	// 	go closer.Close()
-	// }
+	if closer, ok := s.reader.(io.Closer); ok {
+		go closer.Close()
+	}
 
 	s.reader = r
 	s.all = all
@@ -83,11 +83,6 @@ func (s *Reader) Swap(r io.Reader, all bool) {
 	s.wg.Add(1)
 	s.done = false
 }
-
-// // Wait for the current reader to finish.
-// func (s *Reader) Wait() {
-// 	s.wg.Wait()
-// }
 
 func (s *Reader) wait() {
 	s.lock.RLock()
