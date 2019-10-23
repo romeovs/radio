@@ -42,6 +42,11 @@ func (s *Server) setup() {
 		muxie.Methods().
 			HandleFunc("PUT", s.handleSelect),
 	)
+
+	s.mux.Handle("/volume/:percentage",
+		muxie.Methods().
+			HandleFunc("PUT", s.handleSetVolume),
+	)
 }
 
 // ServeHTTP implements http.Server
@@ -79,6 +84,19 @@ func (s *Server) handleSelect(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = s.radio.Select(int(channel))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func (s *Server) handleSetVolume(w http.ResponseWriter, r *http.Request) {
+	param := muxie.GetParam(w, "percentage")
+	volume, err := strconv.ParseUint(param, 10, 64)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Expected integer for volume but got '%s'", param), http.StatusBadRequest)
+	}
+
+	err = s.radio.Volume(uint(volume))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

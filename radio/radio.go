@@ -77,3 +77,9 @@ func (r *Radio) Start() {
 
 	audio.Play(r.stream)
 }
+
+// Volume sets the radio volume.
+func (r *Radio) Volume(volume uint) error {
+	fmt.Printf("SETTING VOLUME %v%%\n", volume)
+	return audio.Volume(volume)
+}
