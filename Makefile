@@ -22,7 +22,7 @@ bin/mac/$(NAME):
 bin/rpi/$(NAME):
 	@$m "Building for RPi..."
 	@mkdir -p bin/rpi
-	@GOOS=linux GOARCH=amd64 $(GO) build -o bin/rpi/$(NAME) cmd/main.go
+	@env GOOS=linux GOARCH=arm GOARM=5 $(GO) build -o bin/rpi/$(NAME) cmd/main.go
 
 # Clean up build artefacts
 clean:
