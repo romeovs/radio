@@ -78,7 +78,10 @@ func (s *Server) handleSelect(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, fmt.Sprintf("Expected integer for channel but got '%s'", param), http.StatusBadRequest)
 	}
 
-	s.radio.Select(int(channel))
+	err = s.radio.Select(int(channel))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 // Listen to the address and serve the server there.
