@@ -28,3 +28,14 @@ func Volume(volume uint) error {
 	cmd := exec.Command("pactl", "set-sink-volume", "0", fmt.Sprintf("%v%%", volume))
 	return cmd.Run()
 }
+
+// Mute or unmute the volume.
+func Mute(mute bool) error {
+	m := "0"
+	if mute {
+		m = "1"
+	}
+
+	cmd := exec.Command("pactl", "set-sink-mute", "0", m)
+	return cmd.Run()
+}

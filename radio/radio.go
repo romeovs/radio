@@ -83,3 +83,9 @@ func (r *Radio) Volume(volume uint) error {
 	fmt.Printf("SETTING VOLUME %v%%\n", volume)
 	return audio.Volume(volume)
 }
+
+// Mute mutes or unmutes the radio.
+func (r *Radio) Mute(mute bool) error {
+	fmt.Printf("MUTING %v\n", mute)
+	return audio.Mute(mute)
+}

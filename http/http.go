@@ -47,6 +47,11 @@ func (s *Server) setup() {
 		muxie.Methods().
 			HandleFunc("PUT", s.handleSetVolume),
 	)
+
+	s.mux.Handle("/mute/:mute",
+		muxie.Methods().
+			HandleFunc("PUT", s.handleSetMute),
+	)
 }
 
 // ServeHTTP implements http.Server
@@ -97,6 +102,19 @@ func (s *Server) handleSetVolume(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = s.radio.Volume(uint(volume))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func (s *Server) handleSetMute(w http.ResponseWriter, r *http.Request) {
+	param := muxie.GetParam(w, "mute")
+
+	if param != "1" && param != "0" {
+		http.Error(w, fmt.Sprintf("Expected 0 or 1 for mute but got '%s'", param), http.StatusBadRequest)
+	}
+
+	err := s.radio.Mute(param == "1")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
