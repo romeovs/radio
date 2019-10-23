@@ -64,5 +64,5 @@ func (cmd *Cmd) Close() error {
 		}
 	}
 
-	return cmd.cmd.Wait()
+	return cmd.cmd.Process.Kill()
 }
