@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/romeovs/radio/config"
+	"github.com/romeovs/radio/gpio"
 	"github.com/romeovs/radio/http"
 	"github.com/romeovs/radio/radio"
 )
@@ -27,6 +28,9 @@ func main() {
 
 	// Set up http server.
 	go http.New(radio).Listen(":8080")
+
+	// Set up gpio pins.
+	go gpio.New(radio).Listen()
 
 	// Start the radio.
 	radio.Start()
