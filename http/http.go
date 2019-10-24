@@ -64,6 +64,7 @@ func (s *Server) handleGetConfig(w http.ResponseWriter, r *http.Request) {
 	err := muxie.Dispatch(w, muxie.JSON, s.radio.Config)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Cannot marshal json: %s", err), http.StatusInternalServerError)
+		return
 	}
 }
 
@@ -73,6 +74,7 @@ func (s *Server) handleSetConfig(w http.ResponseWriter, r *http.Request) {
 	err := muxie.Bind(r, muxie.JSON, cfg)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Cannot parse json: %s", err), http.StatusBadRequest)
+		return
 	}
 
 	s.radio.Config = cfg
@@ -86,11 +88,13 @@ func (s *Server) handleSelect(w http.ResponseWriter, r *http.Request) {
 	channel, err := strconv.ParseInt(param, 10, 64)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Expected integer for channel but got '%s'", param), http.StatusBadRequest)
+		return
 	}
 
 	err = s.radio.Select(int(channel))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 }
 
@@ -99,11 +103,13 @@ func (s *Server) handleSetVolume(w http.ResponseWriter, r *http.Request) {
 	volume, err := strconv.ParseUint(param, 10, 64)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Expected integer for volume but got '%s'", param), http.StatusBadRequest)
+		return
 	}
 
 	err = s.radio.Volume(uint(volume))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 }
 
@@ -112,11 +118,13 @@ func (s *Server) handleSetMute(w http.ResponseWriter, r *http.Request) {
 
 	if param != "1" && param != "0" {
 		http.Error(w, fmt.Sprintf("Expected 0 or 1 for mute but got '%s'", param), http.StatusBadRequest)
+		return
 	}
 
 	err := s.radio.Mute(param == "1")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 }
 
