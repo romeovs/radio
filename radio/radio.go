@@ -6,6 +6,7 @@ import (
 
 	"github.com/romeovs/radio/audio"
 	"github.com/romeovs/radio/config"
+	"github.com/romeovs/radio/log"
 	"github.com/romeovs/radio/sounds"
 	"github.com/romeovs/radio/speech"
 	"github.com/romeovs/radio/swap"
@@ -33,15 +34,15 @@ func (r *Radio) Select(channel int) error {
 
 	if ch == nil {
 		// TODO: log error
-		fmt.Printf("NO CHANNEL [%v] FOUND\n", channel)
+		log.Info("NO CHANNEL [%v] FOUND", channel)
 		return fmt.Errorf("Channel %v does not exist", channel)
 	}
 
-	fmt.Printf("SELECTING [%v] \"%s\"\n", channel, ch.Name)
+	log.Info("SELECTING [%v] \"%s\"", channel, ch.Name)
 	if r.Config.SayChannelName {
 		t, err := speech.Say(ch.Name)
 		if err != nil {
-			fmt.Println("ERROR SPEAKING CHANNEL NAME \"%s\": %s", ch.Name, err)
+			log.Error("ERROR SPEAKING CHANNEL NAME \"%s\": %s", ch.Name, err)
 			return fmt.Errorf("Error saying channel name stream: %s", err)
 		}
 
@@ -50,7 +51,7 @@ func (r *Radio) Select(channel int) error {
 
 	s, err := stream(ch)
 	if err != nil {
-		fmt.Println("ERROR OPENING STREAM:", err)
+		log.Error("ERROR OPENING STREAM: %s", err)
 		return fmt.Errorf("Error opening stream: %s", err)
 	}
 
@@ -71,6 +72,7 @@ func (r *Radio) playall(s io.Reader) {
 
 // Start starts playing the audio stream.
 func (r *Radio) Start() {
+	log.Info("WELCOME")
 	if r.Config.PlayStartupSound {
 		r.playall(sounds.Startup())
 	}
@@ -80,12 +82,12 @@ func (r *Radio) Start() {
 
 // Volume sets the radio volume.
 func (r *Radio) Volume(volume uint) error {
-	fmt.Printf("SETTING VOLUME %v%%\n", volume)
+	log.Info("SETTING VOLUME %v%%", volume)
 	return audio.Volume(volume)
 }
 
 // Mute mutes or unmutes the radio.
 func (r *Radio) Mute(mute bool) error {
-	fmt.Printf("MUTING %v\n", mute)
+	log.Info("MUTING %v", mute)
 	return audio.Mute(mute)
 }

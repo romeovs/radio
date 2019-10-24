@@ -3,9 +3,9 @@
 package gpio
 
 import (
-	"fmt"
 	"time"
 
+	"github.com/romeovs/radio/log"
 	rpio "github.com/stianeikeland/go-rpio/v4"
 )
 
@@ -30,7 +30,7 @@ func init() {
 func (g *GPIO) setup() {
 	err := rpio.Open()
 	if err != nil {
-		fmt.Println("ERROR SETTING UP rpio: %s", err)
+		log.Error("ERROR SETTING UP rpio: %s", err)
 	}
 	defer rpio.Close()
 
@@ -66,5 +66,5 @@ func (g *GPIO) setup() {
 
 func (g *GPIO) event(state State) {
 	// TODO: implement this
-	fmt.Println("EVENT", state)
+	log.Info("EVENT", state)
 }
