@@ -43,7 +43,7 @@ func (s *Server) setup() {
 			HandleFunc("PUT", s.handleSelect),
 	)
 
-	s.mux.Handle("/volume/:percentage",
+	s.mux.Handle("/volume/:volume",
 		muxie.Methods().
 			HandleFunc("PUT", s.handleSetVolume),
 	)
@@ -99,7 +99,7 @@ func (s *Server) handleSelect(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleSetVolume(w http.ResponseWriter, r *http.Request) {
-	param := muxie.GetParam(w, "percentage")
+	param := muxie.GetParam(w, "volume")
 	volume, err := strconv.ParseUint(param, 10, 64)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Expected integer for volume but got '%s'", param), http.StatusBadRequest)
@@ -116,12 +116,12 @@ func (s *Server) handleSetVolume(w http.ResponseWriter, r *http.Request) {
 func (s *Server) handleSetMute(w http.ResponseWriter, r *http.Request) {
 	param := muxie.GetParam(w, "mute")
 
-	if param != "1" && param != "0" {
+	if param != "true" && param != "false" {
 		http.Error(w, fmt.Sprintf("Expected 0 or 1 for mute but got '%s'", param), http.StatusBadRequest)
 		return
 	}
 
-	err := s.radio.Mute(param == "1")
+	err := s.radio.Mute(param == "true")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
