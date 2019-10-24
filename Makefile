@@ -24,7 +24,7 @@ GO_BUILD = \
 	fi
 
 # All the executable names
-exec = bin/_/radio bin/_/hex
+exec = bin/_/radio bin/_/hex bin/_/rctl
 
 # Build the whole mac bundle
 mac: $(subst _,mac,$(exec))
@@ -34,6 +34,7 @@ rpi: $(subst _,rpi,$(exec))
 
 radio: bin/$(DEFAULT)/radio
 hex: bin/$(DEFAULT)/hex
+rctl: bin/$(DEFAULT)/rctl
 
 # Build radio executable
 bin/%/$(NAME): cmd/main.go $(GO_FILES) sounds/bin.go
@@ -41,6 +42,10 @@ bin/%/$(NAME): cmd/main.go $(GO_FILES) sounds/bin.go
 
 # Build the hex helper tool
 bin/%/hex: tools/hex/main.go
+	@$(GO_BUILD)
+
+# Build the rctl helper tool
+bin/%/rctl: tools/rctl/main.go $(GO_FILES)
 	@$(GO_BUILD)
 
 # Pack the system sounds
