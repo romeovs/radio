@@ -62,3 +62,8 @@ clean:
 vet:
 	@$m "Go vetting..."
 	@$(GO) vet ./...
+
+# Test all code
+test:
+	@$m "Testing..."
+	@$(GO) test ./...
