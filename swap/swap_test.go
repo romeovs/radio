@@ -38,7 +38,7 @@ func TestSwap(t *testing.T) {
 		t.Errorf("Expected str = \"aa\", got %#v", str)
 	}
 
-	r.Swap(bs)
+	r.Swap(bs, false)
 	if as.closed != 1 {
 		t.Errorf("Expected as.closed = 1, got %v", as.closed)
 	}
@@ -57,7 +57,7 @@ func TestSwap(t *testing.T) {
 		t.Errorf("Expected str = \"aabb\", got %#v", str)
 	}
 
-	r.Swap(as)
+	r.Swap(as, false)
 	if as.closed != 1 {
 		t.Errorf("Expected as.closed = 1, got %v", as.closed)
 	}

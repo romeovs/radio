@@ -73,7 +73,7 @@ func (s *Reader) Swap(r io.Reader, all bool) {
 
 	// Close the current reader
 	if closer, ok := s.reader.(io.Closer); ok {
-		go closer.Close()
+		closer.Close()
 	}
 
 	s.reader = r
