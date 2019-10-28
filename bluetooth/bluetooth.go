@@ -10,8 +10,14 @@ import (
 
 // Bluetooth creates an audio stream that reads from bluetooth devices.
 func Bluetooth(name string) (io.ReadCloser, error) {
+	// Set the bluetooth alias
+	err := setName(name)
+	if err != nil {
+		return nil, err
+	}
+
 	// Turn on bluetooth
-	err := power(true)
+	err = power(true)
 	if err != nil {
 		return nil, err
 	}
@@ -63,4 +69,9 @@ func power(on bool) error {
 	}
 
 	return exec.Run("bluetoothctl", "power", pwr)
+}
+
+// setName sets the bluetooth device name.
+func setName(name string) error {
+	return exec.Run("bluetoothctl", "system-alias", name)
 }
