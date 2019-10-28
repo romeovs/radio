@@ -16,8 +16,7 @@ These are the sources that have been implemented for now:
 ## Configuration
 
 The radio can be configured via a config file (default `radio.json` or can be
-set using the `-c` flag). See [`radio.json`](/romeovs/radio/blob/master/radio.json) 
-for an example configuration.
+set using the `-c` flag). See [`radio.json`](radio.json) for an example configuration.
 
 
 ## Hardware
