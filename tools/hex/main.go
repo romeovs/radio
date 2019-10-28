@@ -19,7 +19,7 @@ func main() {
 		}
 
 		if err != nil {
-			fmt.Println("hex: error reading from stdin: %s", err)
+			fmt.Printf("hex: error reading from stdin: %s\n", err)
 			os.Exit(1)
 		}
 

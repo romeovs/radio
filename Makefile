@@ -57,3 +57,8 @@ sounds/bin.go: $(wildcard sounds/wav/*)
 clean:
 	@$m "Cleaning..."
 	@rm -rf bin/*
+
+# Vet all code
+vet:
+	@$m "Go vetting..."
+	@$(GO) vet ./...

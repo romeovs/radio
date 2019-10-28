@@ -51,8 +51,8 @@ func check(resp *http.Response) error {
 	return fmt.Errorf(string(body))
 }
 
-func (c Client) url(fmt string, args ...interface{}) string {
-	return c.addr + fmt.Sprintf(fmt, args...)
+func (c Client) url(format string, args ...interface{}) string {
+	return c.addr + fmt.Sprintf(format, args...)
 }
 
 // GetConfig gets the radios configuration.
