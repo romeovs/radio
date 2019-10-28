@@ -66,3 +66,13 @@ func (cmd *Cmd) Close() error {
 
 	return cmd.cmd.Process.Kill()
 }
+
+// Run a command.
+func Run(name string, args ...string) error {
+	return exec.Command(name, args...).Run()
+}
+
+// Output runs a command and returns the stdout output.
+func Output(name string, args ...string) ([]byte, error) {
+	return exec.Command(name, args...).Output()
+}
