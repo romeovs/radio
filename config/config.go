@@ -26,6 +26,9 @@ type Channel struct {
 
 	// The name of the AirPlay device
 	AirplayName string `json:"airplay_name,omitempty"`
+
+	// The name of the bluetooth device.
+	DeviceName string `json:"device_name,omitempty"`
 }
 
 // Channel gets the corresponding channel from the config.

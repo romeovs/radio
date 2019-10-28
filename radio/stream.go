@@ -4,6 +4,7 @@ import (
 	"io"
 
 	"github.com/romeovs/radio/airplay"
+	"github.com/romeovs/radio/bluetooth"
 	"github.com/romeovs/radio/config"
 	"github.com/romeovs/radio/web"
 )
@@ -15,6 +16,8 @@ func stream(channel *config.Channel) (io.Reader, error) {
 		return web.Stream(channel.URL)
 	case "airplay":
 		return airplay.Airplay(channel.AirplayName)
+	case "bluetooth":
+		return bluetooth.Bluetooth(channel.DeviceName)
 	}
 	return nil, nil
 }

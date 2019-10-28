@@ -21,6 +21,11 @@
       "type": "airplay",
       "name": "Airplay",
       "airplay_name": "Radio Airplay"
+    },
+    {
+      "type": "bluetooth",
+      "name": "Bluetooth",
+      "device_name": "Radio"
     }
   ]
 }
