@@ -7,6 +7,8 @@ import (
 	"os/exec"
 )
 
+const defaultSink = "@DEFAULT_SINK@"
+
 // Play the wav audio from the stream
 func Play(s io.Reader) error {
 	play := exec.Command("paplay", "--raw", "--latency-msec=300")
@@ -25,7 +27,7 @@ func Volume(volume uint) error {
 		volume = 100
 	}
 
-	cmd := exec.Command("pactl", "set-sink-volume", "0", fmt.Sprintf("%v%%", volume))
+	cmd := exec.Command("pactl", "set-sink-volume", defaultSink, fmt.Sprintf("%v%%", volume))
 	return cmd.Run()
 }
 
@@ -36,6 +38,6 @@ func Mute(mute bool) error {
 		m = "1"
 	}
 
-	cmd := exec.Command("pactl", "set-sink-mute", "0", m)
+	cmd := exec.Command("pactl", "set-sink-mute", defaultSink, m)
 	return cmd.Run()
 }
