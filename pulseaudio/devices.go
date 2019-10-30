@@ -59,6 +59,10 @@ func parseDevices(out string) ([]Device, error) {
 	devices := make([]Device, len(lines))
 
 	for i, line := range lines {
+		if line == "" {
+			continue
+		}
+
 		dev, err := parseDevice(line)
 		if err != nil {
 			return nil, err
