@@ -48,6 +48,10 @@ bin/%/hex: tools/hex/main.go
 bin/%/rctl: tools/rctl/main.go $(GO_FILES)
 	@$(GO_BUILD)
 
+# Build the gpio pin tester tool
+bin/%/pin: tools/pin/main.go $(GO_FILES)
+	@$(GO_BUILD)
+
 # Pack the system sounds
 sounds/bin.go: $(wildcard sounds/wav/*)
 	@$m "Packing sounds/wav..."
