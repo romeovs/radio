@@ -66,5 +66,5 @@ func (g *GPIO) setup() {
 
 func (g *GPIO) event(state State) {
 	// TODO: implement this
-	log.Info("EVENT", state)
+	log.Info("EVENT %#v", state)
 }
