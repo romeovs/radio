@@ -52,6 +52,10 @@ bin/%/rctl: tools/rctl/main.go $(GO_FILES)
 bin/%/pin: tools/pin/main.go $(GO_FILES)
 	@$(GO_BUILD)
 
+# Build the pot tester tool
+bin/%/pot: tools/pot/main.go
+	@$(GO_BUILD)
+
 # Pack the system sounds
 sounds/bin.go: $(wildcard sounds/wav/*)
 	@$m "Packing sounds/wav..."
