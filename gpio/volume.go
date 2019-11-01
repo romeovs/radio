@@ -9,6 +9,20 @@ import (
 )
 
 // Volume can read the status of the volume knob.
+//
+// This expects the raspberry pi to be wired correctly with
+// an MCP3008 like so:
+//
+// MCP		RPI
+// -----------
+// VDD		3.3V
+// VREF		3.3V
+// AGND		GND CLK		GPIO11
+// DOUT		GPIO9
+// DIN		GPIO10
+// CS			GPIO8
+// DGND		GND
+//
 type Volume struct {
 	curr int
 	done bool
@@ -17,6 +31,7 @@ type Volume struct {
 }
 
 // NewVolume creates a new volume that is ready for use.
+// This expects rpio.Open to be called already.
 func NewVolume() (*Volume, error) {
 	err := rpio.SpiBegin(rpio.Spi0)
 	if err != nil {

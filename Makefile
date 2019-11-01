@@ -24,7 +24,7 @@ GO_BUILD = \
 	fi
 
 # All the executable names
-exec = bin/_/radio bin/_/hex bin/_/rctl
+exec = bin/_/radio bin/_/hex bin/_/rctl bin/_/vol
 
 # Build the whole mac bundle
 mac: $(subst _,mac,$(exec))
@@ -52,8 +52,8 @@ bin/%/rctl: tools/rctl/main.go $(GO_FILES)
 bin/%/pin: tools/pin/main.go $(GO_FILES)
 	@$(GO_BUILD)
 
-# Build the pot tester tool
-bin/%/pot: tools/pot/main.go
+# Build the volume tester tool
+bin/%/vol: tools/vol/main.go
 	@$(GO_BUILD)
 
 # Pack the system sounds
