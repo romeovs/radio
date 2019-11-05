@@ -2,11 +2,14 @@ package main
 
 import (
 	"flag"
-	"log"
+	"fmt"
+	"os"
+	"os/signal"
 
 	"github.com/romeovs/radio/config"
 	"github.com/romeovs/radio/gpio"
 	"github.com/romeovs/radio/http"
+	"github.com/romeovs/radio/log"
 	"github.com/romeovs/radio/radio"
 )
 
@@ -20,8 +23,14 @@ func main() {
 
 	cfg, err := config.Open(*configFile)
 	if err != nil {
-		log.Fatal(err)
+		log.Error("Error opening config file: %s", err)
+		os.Exit(1)
 	}
+
+	defer func() {
+		fmt.Println()
+		log.Info("BYE")
+	}()
 
 	// Build radio.
 	radio := radio.NewRadio(cfg)
@@ -35,5 +44,14 @@ func main() {
 	defer io.Close()
 
 	// Start the radio.
-	radio.Start()
+	go radio.Start()
+
+	// Wait for interrupt.
+	wait()
+}
+
+func wait() {
+	ch := make(chan os.Signal, 1)
+	signal.Notify(ch, os.Interrupt)
+	<-ch
 }
