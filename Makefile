@@ -24,7 +24,7 @@ GO_BUILD = \
 	fi
 
 # All the executable names
-exec = bin/_/radio bin/_/hex bin/_/rctl bin/_/vol
+exec = bin/_/radio bin/_/hex bin/_/rctl bin/_/vol bin/_/sel
 
 # Build the whole mac bundle
 mac: $(subst _,mac,$(exec))
@@ -35,6 +35,8 @@ rpi: $(subst _,rpi,$(exec))
 radio: bin/$(DEFAULT)/radio
 hex: bin/$(DEFAULT)/hex
 rctl: bin/$(DEFAULT)/rctl
+vol: bin/$(DEFAULT)/vol
+sel: bin/$(DEFAULT)/sel
 
 # Build radio executable
 bin/%/$(NAME): cmd/main.go $(GO_FILES) sounds/bin.go
@@ -54,6 +56,10 @@ bin/%/pin: tools/pin/main.go $(GO_FILES)
 
 # Build the volume tester tool
 bin/%/vol: tools/vol/main.go
+	@$(GO_BUILD)
+
+# Build the selector tester tool
+bin/%/sel: tools/sel/main.go
 	@$(GO_BUILD)
 
 # Pack the system sounds
