@@ -49,23 +49,33 @@ func NewVolume() (*Volume, error) {
 
 	go func() {
 		for {
-			v.lock.Lock()
-			if v.done {
+			if ok := v.poll(); !ok {
 				return
 			}
-
-			vol := read()
-			if vol != v.curr {
-				v.curr = vol
-				v.ch <- vol
-			}
-			v.lock.Unlock()
-
 			time.Sleep(200 * time.Millisecond)
 		}
 	}()
 
 	return v, nil
+}
+
+// poll is one step in the polling process.
+// Returns true if it should keep on polling, false if the polling should end.
+func (v *Volume) poll() bool {
+	v.lock.Lock()
+	defer v.lock.Unlock()
+
+	if v.done {
+		return false
+	}
+
+	vol := read()
+	if vol != v.curr {
+		v.curr = vol
+		v.ch <- vol
+	}
+
+	return true
 }
 
 // Changes returns a channel on which changes in volume will be post.

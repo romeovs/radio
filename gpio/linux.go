@@ -19,20 +19,22 @@ func (g *GPIO) setup() {
 	if err != nil {
 		log.Error("ERROR SETTING UP rpio: %s", err)
 	}
-	defer rpio.Close()
 
-	vol, err := NewVolume()
+	g.vol, err = NewVolume()
 	if err != nil {
 		log.Error("ERROR SETTING UP VOLUME KNOB: %s", err)
 	}
-	defer vol.Close()
-
-	vch := vol.Changes()
 
 	for {
 		select {
-		case v := <-vch:
+		case v := <-vol.Changes():
 			g.volume(v)
 		}
 	}
+}
+
+// Close closes the GPIO object.
+func (g *GPIO) Close() {
+	rpio.Close()
+	g.volume.Close()
 }

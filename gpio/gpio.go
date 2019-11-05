@@ -7,6 +7,7 @@ import (
 // GPIO monitors changes on the IO pins of a Raspberry Pi.
 type GPIO struct {
 	radio *radio.Radio
+	vol   *Volume
 }
 
 // New returns a new GPIO instance.

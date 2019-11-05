@@ -30,7 +30,9 @@ func main() {
 	go http.New(radio).Listen(":8080")
 
 	// Set up gpio pins.
-	go gpio.New(radio).Listen()
+	io := gpio.New(radio)
+	go io.Listen()
+	defer io.Close()
 
 	// Start the radio.
 	radio.Start()
