@@ -29,10 +29,10 @@ GPIO 18   AMP2 sound interface
 GPIO 19   AMP2 sound interface
 GPIO 20   AMP2 sound interface
 GPIO 21   AMP2 sound interface
-GPIO 22
-GPIO 23
-GPIO 24
-GPIO 25
+GPIO 22   Coded Rotary Pin A
+GPIO 23   Coded Rotary Pin B
+GPIO 24   Coded Rotary Pin C
+GPIO 25   Coded Rotary Pin D
 ```
 
 ## MCP3008

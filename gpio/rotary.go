@@ -1,5 +1,7 @@
 package gpio
 
+import "github.com/stianeikeland/go-rpio"
+
 var (
 	rotaryPinA = 1
 	rotaryPinB = 2
@@ -34,27 +36,22 @@ var (
 //    14    0111
 //    15    1111
 //    16    0000
-func rotarySwitch(state State) int {
-	A := state[rotaryPinA]
-	B := state[rotaryPinB]
-	C := state[rotaryPinC]
-	D := state[rotaryPinD]
-
+func rotarySwitch(A, B, C, D rpio.State) int {
 	dail := 0b0000
 
-	if A {
+	if A == rpio.High {
 		dail = dail | 0b0001
 	}
 
-	if B {
+	if B == rpio.High {
 		dail = dail | 0b0010
 	}
 
-	if C {
+	if C == rpio.High {
 		dail = dail | 0b0100
 	}
 
-	if D {
+	if D == rpio.High {
 		dail = dail | 0b1000
 	}
 

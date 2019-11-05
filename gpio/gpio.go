@@ -8,6 +8,7 @@ import (
 type GPIO struct {
 	radio *radio.Radio
 	vol   *Volume
+	sel   *Selector
 }
 
 // New returns a new GPIO instance.

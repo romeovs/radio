@@ -25,10 +25,17 @@ func (g *GPIO) setup() {
 		log.Error("ERROR SETTING UP VOLUME KNOB: %s", err)
 	}
 
+	g.sel, err = NewSelector()
+	if err != nil {
+		log.Error("ERROR SETTING UP CHANNEL KNOB: %s", err)
+	}
+
 	for {
 		select {
-		case v := <-vol.Changes():
+		case v := <-g.vol.Changes():
 			g.volume(v)
+		case v := <-g.sel.Changes():
+			g.change(v)
 		}
 	}
 }
@@ -36,5 +43,6 @@ func (g *GPIO) setup() {
 // Close closes the GPIO object.
 func (g *GPIO) Close() {
 	rpio.Close()
-	g.volume.Close()
+	g.vol.Close()
+	g.sel.Close()
 }
