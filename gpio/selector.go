@@ -1,9 +1,6 @@
 package gpio
 
 import (
-	"sync"
-	"time"
-
 	"github.com/stianeikeland/go-rpio"
 )
 
@@ -22,10 +19,6 @@ import (
 // D			GPIO 25
 //
 type Selector struct {
-	done bool
-	curr int
-	ch   chan int
-	lock sync.Mutex
 	pins []rpio.Pin
 }
 
@@ -38,38 +31,24 @@ var (
 
 // NewSelector returns a new selector that starts listening right away.
 func NewSelector() (*Selector, error) {
-	s := &Selector{
-		ch: make(chan int),
-		pins: []rpio.Pin{
-			rpio.Pin(selectorPinA),
-			rpio.Pin(selectorPinB),
-			rpio.Pin(selectorPinC),
-			rpio.Pin(selectorPinD),
-		},
+	pins := []rpio.Pin{
+		rpio.Pin(selectorPinA),
+		rpio.Pin(selectorPinB),
+		rpio.Pin(selectorPinC),
+		rpio.Pin(selectorPinD),
 	}
 
-	for _, pin := range s.pins {
+	for _, pin := range pins {
 		pin.Input()
 		pin.PullDown()
 		pin.Detect(rpio.AnyEdge)
 	}
 
-	s.curr = s.read()
-
-	go func() {
-		for {
-			if ok := s.poll(); !ok {
-				return
-			}
-			time.Sleep(200 * time.Millisecond)
-		}
-	}()
-	return s, nil
-
+	return &Selector{pins: pins}, nil
 }
 
-// read the pins and convert the output.
-func (s *Selector) read() int {
+// Read the pins and convert the output.
+func (s *Selector) Read() int {
 	return decodeSelector(
 		s.pins[0].Read(),
 		s.pins[1].Read(),
@@ -78,38 +57,12 @@ func (s *Selector) read() int {
 	)
 }
 
-// poll for changes, returns false if we should stop polling,
-// and true if otherwise.
-func (s *Selector) poll() bool {
-	s.lock.Lock()
-	defer s.lock.Unlock()
-
-	if s.done {
-		return false
-	}
-
-	ch := s.read()
-	if ch != s.curr {
-		s.curr = ch
-		s.ch <- ch
-	}
-
-	return true
-}
-
 // Close the selector and deregister all pins.
 func (s *Selector) Close() {
 	for _, pin := range s.pins {
 		pin.Detect(rpio.NoEdge)
 		pin.PullOff()
 	}
-
-	s.done = true
-}
-
-// Changes returns a channel that contains the changes in the pin.
-func (s *Selector) Changes() <-chan int {
-	return s.ch
 }
 
 // decodeSelector decodes the state of the rotary switch.

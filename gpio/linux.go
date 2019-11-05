@@ -30,12 +30,23 @@ func (g *GPIO) setup() {
 		log.Error("ERROR SETTING UP CHANNEL KNOB: %s", err)
 	}
 
+	vol := cache{g.vol.Read()}
+	sel := cache{g.sel.Read()}
+
+	t := time.NewTicker(200 * time.Millisecond)
 	for {
 		select {
-		case v := <-g.vol.Changes():
-			g.volume(v)
-		case v := <-g.sel.Changes():
-			g.change(v)
+		case _, ok := <-g.done:
+			t.Stop()
+			return
+		case <-t.C:
+			if v, changed := vol.Changed(g.vol.Read()); changed {
+				g.volume(v)
+			}
+
+			if s, changed := sel.Changed(g.sel.Read()); changed {
+				g.change(s)
+			}
 		}
 	}
 }
@@ -45,4 +56,16 @@ func (g *GPIO) Close() {
 	rpio.Close()
 	g.vol.Close()
 	g.sel.Close()
+
+	close(g.done)
+}
+
+type cache struct {
+	value int
+}
+
+func (c *cache) Changed(newvalue int) (int, bool) {
+	res := c.value == newvalue
+	c.value = newvalue
+	return
 }

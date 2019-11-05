@@ -2,8 +2,6 @@ package gpio
 
 import (
 	"math"
-	"sync"
-	"time"
 
 	rpio "github.com/stianeikeland/go-rpio/v4"
 )
@@ -24,10 +22,6 @@ import (
 // DGND		GND
 //
 type Volume struct {
-	curr int
-	done bool
-	ch   chan int
-	lock sync.RWMutex
 }
 
 // NewVolume creates a new volume that is ready for use.
@@ -41,56 +35,16 @@ func NewVolume() (*Volume, error) {
 	rpio.SpiSpeed(1350000)
 	rpio.SpiChipSelect(0)
 
-	v := &Volume{
-		curr: read(),
-		ch:   make(chan int),
-		done: false,
-	}
-
-	go func() {
-		for {
-			if ok := v.poll(); !ok {
-				return
-			}
-			time.Sleep(200 * time.Millisecond)
-		}
-	}()
-
-	return v, nil
+	return &Volume{}, nil
 }
 
-// poll is one step in the polling process.
-// Returns true if it should keep on polling, false if the polling should end.
-func (v *Volume) poll() bool {
-	v.lock.Lock()
-	defer v.lock.Unlock()
-
-	if v.done {
-		return false
-	}
-
-	vol := read()
-	if vol != v.curr {
-		v.curr = vol
-		v.ch <- vol
-	}
-
-	return true
-}
-
-// Changes returns a channel on which changes in volume will be post.
-func (v *Volume) Changes() <-chan int {
-	return v.ch
+// Read the value of the volume knob.
+func (v *Volume) Read() int {
+	return read()
 }
 
 // Close the Volume reader.
 func (v *Volume) Close() {
-	v.lock.Lock()
-	defer v.lock.Unlock()
-
-	v.done = true
-	close(v.ch)
-
 	rpio.SpiEnd(rpio.Spi0)
 }
 

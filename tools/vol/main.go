@@ -6,13 +6,10 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"time"
 
 	"github.com/romeovs/radio/gpio"
 	rpio "github.com/stianeikeland/go-rpio/v4"
-)
-
-var (
-	channel = 0
 )
 
 func main() {
@@ -24,14 +21,21 @@ func main() {
 	check(err)
 	defer vol.Close()
 
+	v := vol.Read()
 	sig := interrupt()
 
+	t := time.NewTicker(200 * time.Millisecond)
 	for {
 		select {
-		case v := <-vol.Changes():
-			fmt.Println(v)
 		case <-sig:
+			t.Stop()
 			return
+		case <-t.C:
+			vv := vol.Read()
+			if vv != v {
+				fmt.Println(vv)
+				v = vv
+			}
 		}
 	}
 }

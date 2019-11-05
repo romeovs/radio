@@ -9,6 +9,7 @@ type GPIO struct {
 	radio *radio.Radio
 	vol   *Volume
 	sel   *Selector
+	done  chan bool
 }
 
 // New returns a new GPIO instance.
