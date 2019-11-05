@@ -4,6 +4,8 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
+	"os/signal"
 
 	"github.com/romeovs/radio/gpio"
 	rpio "github.com/stianeikeland/go-rpio/v4"
@@ -22,9 +24,15 @@ func main() {
 	check(err)
 	defer sel.Close()
 
+	sig := interrupt()
+
 	for {
-		v := <-sel.Changes()
-		fmt.Println(v)
+		select {
+		case v := <-sel.Changes():
+			fmt.Println(v)
+		case <-sig:
+			return
+		}
 	}
 }
 
@@ -32,4 +40,10 @@ func check(err error) {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func interrupt() chan os.Signal {
+	ch := make(chan os.Signal, 1)
+	signal.Notify(ch, os.Interrupt)
+	return ch
 }
