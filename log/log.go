@@ -1,6 +1,14 @@
 package log
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+	"os"
+	"time"
+)
+
+// LogFile is the file to which the log messages will be written.
+var LogFile = "./radio.log"
 
 type level string
 
@@ -9,6 +17,14 @@ const (
 	debug level = "debug"
 	err   level = "error"
 )
+
+// Entry is a log entry
+type Entry struct {
+	Level     level         `json:"lvl"`
+	Message   string        `json:"msg"`
+	Timestamp time.Time     `json:"ts"`
+	Args      []interface{} `json:"args"`
+}
 
 // Info prints an info log message.
 func Info(msg string, args ...interface{}) {
@@ -26,7 +42,45 @@ func Error(msg string, args ...interface{}) {
 }
 
 func log(level level, msg string, args ...interface{}) {
-	fmt.Printf("radio: ")
-	fmt.Printf(msg, args...)
+	entry := &Entry{
+		Level:     level,
+		Message:   fmt.Sprintf(msg, args...),
+		Timestamp: time.Now(),
+		Args:      args,
+	}
+
+	console(entry)
+	logfile(entry)
+}
+
+// console prints the log message to the console.
+func console(entry *Entry) {
+	fmt.Printf("radio [%s] ", entry.Timestamp.Format("2006-01-02 15:04:05.000"))
+	fmt.Printf(entry.Message)
 	fmt.Printf("\n")
+}
+
+// logfile prints the log message to the log file.
+func logfile(entry *Entry) {
+	f, err := os.OpenFile(LogFile, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+
+	err = json.NewEncoder(f).Encode(entry)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func init() {
+	f, err := os.OpenFile(LogFile, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+
+	f.Truncate(0)
+	f.Seek(0, 0)
 }
