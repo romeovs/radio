@@ -52,11 +52,7 @@ func NewRaceReader(r io.ReadCloser) *RaceReader {
 func (r *RaceReader) Read(p []byte) (int, error) {
 	select {
 	case buf := <-r.reads:
-		for i, b := range buf {
-			p[i] = b
-		}
-
-		return len(buf), nil
+		return copy(p, buf), nil
 	case <-time.After(400 * time.Millisecond):
 		return 0, nil
 	}
