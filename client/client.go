@@ -30,7 +30,7 @@ func request(method string, url string) (*http.Response, error) {
 		return nil, err
 	}
 
-	if check(resp); err != nil {
+	if err = check(resp); err != nil {
 		return nil, err
 	}
 
