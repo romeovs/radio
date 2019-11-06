@@ -129,6 +129,6 @@ func (s *Server) handleSetMute(w http.ResponseWriter, r *http.Request) {
 }
 
 // Listen to the address and serve the server there.
-func (s *Server) Listen(addr string) {
-	http.ListenAndServe(addr, s)
+func (s *Server) Listen(addr string) error {
+	return http.ListenAndServe(addr, s)
 }
