@@ -8,8 +8,13 @@ import (
 	"time"
 )
 
-// LogFile is the file to which the log messages will be written.
-var LogFile = "./radio.log"
+var (
+	// LogFile is the file to which the log messages will be written.
+	LogFile = "./radio.log"
+
+	// Level is the level at which to log to the console
+	Level = info
+)
 
 type level string
 
@@ -56,7 +61,9 @@ func log(level level, msg string, args ...interface{}) {
 
 // console prints the log message to the console.
 func console(entry *Entry) {
-	Fprint(os.Stdout, entry)
+	if entry.Level != debug || Level == debug {
+		Fprint(os.Stdout, entry)
+	}
 }
 
 // Fprint pretty prints the log entry to the writer.
