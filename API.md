@@ -30,3 +30,15 @@ Set the volume to the specified value, which must be in the 0 - 100 range.
 PUT /mute/{true|false}
 ```
 Mute or unmute the radio. Does not change the value for the volume.
+
+## Logs
+
+```
+GET /logs
+```
+Get the logs in JSON format.
+
+```
+GET /logs?simple=1
+```
+Get the logs in human-readable format.

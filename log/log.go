@@ -3,6 +3,7 @@ package log
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"time"
 )
@@ -55,9 +56,14 @@ func log(level level, msg string, args ...interface{}) {
 
 // console prints the log message to the console.
 func console(entry *Entry) {
-	fmt.Printf("radio [%s] ", entry.Timestamp.Format("2006-01-02 15:04:05.000"))
-	fmt.Printf(entry.Message)
-	fmt.Printf("\n")
+	Fprint(os.Stdout, entry)
+}
+
+// Fprint pretty prints the log entry to the writer.
+func Fprint(w io.Writer, entry *Entry) {
+	fmt.Fprintf(w, "radio [%s] ", entry.Timestamp.Format("2006-01-02 15:04:05.000"))
+	fmt.Fprintf(w, entry.Message)
+	fmt.Fprintf(w, "\n")
 }
 
 // logfile prints the log message to the log file.

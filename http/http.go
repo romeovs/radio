@@ -1,12 +1,18 @@
 package http
 
 import (
+	"bufio"
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/kataras/muxie"
 	"github.com/romeovs/radio/config"
+	"github.com/romeovs/radio/log"
 	"github.com/romeovs/radio/radio"
 )
 
@@ -51,6 +57,11 @@ func (s *Server) setup() {
 	s.mux.Handle("/mute/:mute",
 		muxie.Methods().
 			HandleFunc("PUT", s.handleSetMute),
+	)
+
+	s.mux.Handle("/logs",
+		muxie.Methods().
+			HandleFunc("GET", s.handleGetLogs),
 	)
 }
 
@@ -126,6 +137,51 @@ func (s *Server) handleSetMute(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+}
+
+func (s *Server) handleGetLogs(w http.ResponseWriter, r *http.Request) {
+	f, err := os.OpenFile(log.LogFile, os.O_RDONLY, 0666)
+	if err != nil {
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
+	defer f.Close()
+
+	if r.URL.Query().Get("plain") == "1" {
+		buf := bufio.NewReaderSize(f, 64*1024)
+
+		for {
+			entry := new(log.Entry)
+			line, isPrefix, err := buf.ReadLine()
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				http.Error(w, fmt.Sprintf("Cannot read log file: %s", err), http.StatusInternalServerError)
+				return
+			}
+
+			if isPrefix {
+				// TODO: write line to w
+				w.Write(line)
+				w.Write([]byte("\n"))
+				continue
+			}
+
+			err = json.NewDecoder(bytes.NewBuffer(line)).Decode(entry)
+			if err != nil {
+				http.Error(w, fmt.Sprintf("Cannot parse log file: %s", err), http.StatusInternalServerError)
+				return
+			}
+
+			log.Fprint(w, entry)
+		}
+
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	io.Copy(w, f)
 }
 
 // Listen to the address and serve the server there.
