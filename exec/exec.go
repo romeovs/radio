@@ -49,7 +49,7 @@ func (cmd *Cmd) Read(p []byte) (int, error) {
 	n, err := cmd.stdout.Read(p)
 
 	if err != nil {
-		cmd.cmd.Wait()
+		_ = cmd.cmd.Wait()
 		return 0, err
 	}
 

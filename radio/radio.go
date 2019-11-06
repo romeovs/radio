@@ -77,7 +77,10 @@ func (r *Radio) Start() {
 		r.playall(sounds.Startup())
 	}
 
-	audio.Play(r.stream)
+	err := audio.Play(r.stream)
+	if err != nil {
+		log.Error("CANNOT PLAY STREAM: %s", err)
+	}
 }
 
 // Volume sets the radio volume.

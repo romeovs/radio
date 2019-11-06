@@ -26,10 +26,10 @@ func (g *GPIO) Listen() {
 
 // change the channel.
 func (g *GPIO) change(channel int) {
-	g.radio.Select(channel)
+	_ = g.radio.Select(channel)
 }
 
 // volume sets the volume in the underlying radio.
 func (g *GPIO) volume(vol int) {
-	g.radio.Volume(uint(vol))
+	_ = g.radio.Volume(uint(vol))
 }
