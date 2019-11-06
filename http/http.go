@@ -67,6 +67,7 @@ func (s *Server) setup() {
 
 // ServeHTTP implements http.Server
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	log.Debug("HTTP API: %s %s", r.Method, r.URL.String())
 	s.mux.ServeHTTP(w, r)
 }
 
