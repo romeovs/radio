@@ -20,7 +20,7 @@ GO_BUILD = \
 	else \
 		$m "Building "`basename $@`" for RPi..."; \
 	 	mkdir -p `dirname $@`; \
-		env GOOS=linux GOARCH=arm GOARM=5 $(GO) build -o $@ $(GO_OPTS) $<; \
+		env GOOS=linux GOARCH=arm GOARM=6 $(GO) build -o $@ $(GO_OPTS) $<; \
 	fi
 
 # All the executable names
