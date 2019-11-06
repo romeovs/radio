@@ -86,6 +86,10 @@ func (r *Radio) Start() {
 
 // Volume sets the radio volume.
 func (r *Radio) Volume(volume uint) error {
+	if volume > 100 {
+		return fmt.Errorf("INVALID VOLUME VALUE %v", volume)
+	}
+
 	log.Info("SETTING VOLUME %v%%", volume)
 	return audio.Volume(volume)
 }

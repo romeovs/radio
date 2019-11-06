@@ -118,6 +118,11 @@ func (s *Server) handleSetVolume(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if volume < 0 || volume > 100 {
+		http.Error(w, fmt.Sprintf("Expected integer between 0 - 100 for volume but got '%s'", param), http.StatusBadRequest)
+		return
+	}
+
 	err = s.radio.Volume(uint(volume))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
