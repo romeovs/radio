@@ -20,9 +20,6 @@ func Play(s io.Reader) error {
 
 // Volume sets the system volume in percentage (0-100).
 func Volume(volume uint) error {
-	if volume < 0 {
-		volume = 0
-	}
 	if volume > 100 {
 		volume = 100
 	}
