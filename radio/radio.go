@@ -15,6 +15,7 @@ import (
 // Radio is the main radio model
 type Radio struct {
 	Config *config.Config
+	OnMute func(mute bool)
 
 	stream *swap.Reader
 }
@@ -92,5 +93,10 @@ func (r *Radio) Volume(volume uint) error {
 // Mute mutes or unmutes the radio.
 func (r *Radio) Mute(mute bool) error {
 	log.Info("MUTING %v", mute)
+
+	if r.OnMute != nil {
+		r.OnMute(mute)
+	}
+
 	return audio.Mute(mute)
 }

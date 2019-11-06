@@ -20,6 +20,11 @@ func (g *GPIO) setup() {
 		log.Error("ERROR SETTING UP rpio: %s", err)
 	}
 
+	g.amp, err = NewAMP2()
+	if err != nil {
+		log.Error("ERROR SETTING UP AMP2: %s", err)
+	}
+
 	g.vol, err = NewVolume()
 	if err != nil {
 		log.Error("ERROR SETTING UP VOLUME KNOB: %s", err)
@@ -56,6 +61,7 @@ func (g *GPIO) Close() {
 	rpio.Close()
 	g.vol.Close()
 	g.sel.Close()
+	g.amp.Close()
 
 	close(g.done)
 }

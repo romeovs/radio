@@ -43,6 +43,11 @@ func main() {
 	go io.Listen()
 	defer io.Close()
 
+	// Mute using the AMP2 if possible.
+	radio.OnMute = func(mute bool) {
+		io.Mute(mute)
+	}
+
 	// Start the radio.
 	go radio.Start()
 
