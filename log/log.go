@@ -61,9 +61,7 @@ func console(entry *Entry) {
 
 // Fprint pretty prints the log entry to the writer.
 func Fprint(w io.Writer, entry *Entry) {
-	fmt.Fprintf(w, "radio [%s] ", entry.Timestamp.Format("2006-01-02 15:04:05.000"))
-	fmt.Fprintf(w, entry.Message)
-	fmt.Fprintf(w, "\n")
+	fmt.Fprintf(w, "radio [%s] %s  %s\n", entry.Timestamp.Format("2006-01-02 15:04:05.000"), entry.Level, entry.Message)
 }
 
 // logfile prints the log message to the log file.
