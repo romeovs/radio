@@ -2,9 +2,16 @@ package swap
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
+// chunk the characters by this amount
+var chunk = 1
+
 func TestSwap(t *testing.T) {
+	require := require.New(t)
+
 	as := &bytes{'a', 0}
 	bs := &bytes{'b', 0}
 
@@ -17,77 +24,45 @@ func TestSwap(t *testing.T) {
 		p := make([]byte, 2)
 
 		n, err := r.Read(p)
-		if err != nil {
-			t.Errorf("Expected err = nil, got %s", err)
-		}
-
-		if n != chunk {
-			t.Errorf("Expected n = 1, got %#v", chunk)
-		}
-
+		require.Nil(err, "reading from a swapper with a reader should not return nil")
+		require.Equal(n, chunk, "reading from a swapper should return all available bytes")
 		str += string(p[0:n])
 	}
 
 	read()
-	if str != "a" {
-		t.Errorf("Expected str = \"a\", got %#v", str)
-	}
+	require.Equal(str, "a", "string should be \"a\"")
 
 	read()
-	if str != "aa" {
-		t.Errorf("Expected str = \"aa\", got %#v", str)
-	}
+	require.Equal(str, "aa", "string should be \"aa\"")
 
 	r.Swap(bs, false)
-	if as.closed != 1 {
-		t.Errorf("Expected as.closed = 1, got %v", as.closed)
-	}
-
-	if bs.closed != 0 {
-		t.Errorf("Expected bs.closed = 0, got %v", bs.closed)
-	}
+	require.Equal(as.closed, 1, "as should be closed once after first Swap")
+	require.Equal(bs.closed, 0, "bs should not be closed after first Swap")
 
 	read()
-	if str != "aab" {
-		t.Errorf("Expected str = \"aab\", got %#v", str)
-	}
+	require.Equal(str, "aab", "string should be \"aab\"")
 
 	read()
-	if str != "aabb" {
-		t.Errorf("Expected str = \"aabb\", got %#v", str)
-	}
+	require.Equal(str, "aabb", "string should be \"aabb\"")
 
 	r.Swap(as, false)
-	if as.closed != 1 {
-		t.Errorf("Expected as.closed = 1, got %v", as.closed)
-	}
-
-	if bs.closed != 1 {
-		t.Errorf("Expected bs.closed = 1, got %v", bs.closed)
-	}
+	require.Equal(as.closed, 1, "as should be closed once after second Swap")
+	require.Equal(bs.closed, 1, "bs should be closed once after second Swap")
 
 	read()
-	if str != "aabba" {
-		t.Errorf("Expected str = \"aabba\", got %#v", str)
-	}
+	require.Equal(str, "aabba", "string should be \"aabba\"")
 }
 
 func TestEmptySwap(t *testing.T) {
+	require := require.New(t)
+
 	r := NewReader(nil)
 	p := make([]byte, 3)
 
 	n, err := r.Read(p)
-	if err != nil {
-		t.Errorf("Expected err = nil, got %s", err)
-	}
-
-	if n != 0 {
-		t.Errorf("Expected n = 0, got %v", n)
-	}
+	require.Nil(err, "reading from an empty swapper should not return an error")
+	require.Zero(n, "reading from an empty swapper return 0 bytes")
 }
-
-// chunk the characters by this amount
-var chunk = 1
 
 // bytes implements a reader that reads the same byte always.
 type bytes struct {
