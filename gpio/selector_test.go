@@ -1,9 +1,11 @@
 package gpio
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/stianeikeland/go-rpio"
+	"github.com/stretchr/testify/require"
 )
 
 func TestDecodeSelector(t *testing.T) {
@@ -32,19 +34,20 @@ func TestDecodeSelector(t *testing.T) {
 
 	for _, tt := range tests {
 		v := decodeSelector(
-			toState(tt.pins, 0b1000),
-			toState(tt.pins, 0b0100),
-			toState(tt.pins, 0b0010),
-			toState(tt.pins, 0b0001),
+			toState(tt.pins, 'A'),
+			toState(tt.pins, 'B'),
+			toState(tt.pins, 'C'),
+			toState(tt.pins, 'D'),
 		)
 
-		if tt.out != v {
-			t.Errorf("Expected state %04b to result in value %v, but got %v", tt.pins, tt.out, v)
-		}
+		require.Equal(t, tt.out, v, "Expected decodeSelector(%04b) to result in value %v, but got %v", tt.pins, tt.out, v)
 	}
 }
 
-func toState(s int, mask int) rpio.State {
+func toState(s int, pin rune) rpio.State {
+	n := strings.IndexRune("DCBA", pin)
+	mask := 1 << n
+
 	if s&mask != 0 {
 		return rpio.High
 	}

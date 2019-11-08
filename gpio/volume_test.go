@@ -1,14 +1,16 @@
 package gpio
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/require"
+)
 
 func TestMCP3008Volume(t *testing.T) {
-	type test struct {
+	tests := []struct {
 		buf    []byte
 		volume int
-	}
-
-	tests := []test{
+	}{
 		{[]byte{0x00, 0x00, 0x00}, 100},
 		{[]byte{0x00, 0x00, 0x01}, 100},
 		{[]byte{0x00, 0x00, 0x06}, 99},
@@ -21,10 +23,8 @@ func TestMCP3008Volume(t *testing.T) {
 		{[]byte{0x00, 0xFF, 0xFF}, 0},
 	}
 
-	for _, test := range tests {
-		r := MCP3008Volume(test.buf)
-		if r != test.volume {
-			t.Errorf("Expected MCP3008Volume(%#v) to be %v, but got %v", test.buf, test.volume, r)
-		}
+	for _, tt := range tests {
+		vol := MCP3008Volume(tt.buf)
+		require.Equal(t, vol, tt.volume, "MCP3008(%#v) should return the correct volume", tt.buf)
 	}
 }
