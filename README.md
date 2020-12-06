@@ -12,6 +12,35 @@ These are the sources that have been implemented for now:
 - Airplay
 - Bluetooth
 
+## Run locally 
+
+Run Radio from your shell:
+
+```sh
+go cmd/main.go
+```
+
+Set a channel using curl, e.g.
+ 
+```sh
+curl -XPUT http://localhost:8080/select/1
+ ```
+
+See `http.go` for more
+
+## Dependencies
+
+Radio uses PulseAudio. If you are on a non-linux OS you will need to install it, for example via Homebrew:
+
+```sh
+brew install pulseaudio
+```
+
+And start it:
+
+```sh
+brew services start pulseaudio
+```
 
 ## Configuration
 
