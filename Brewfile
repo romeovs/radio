@@ -1,3 +1,3 @@
-pulseaudio
-espeak
-shairport-sync
+brew "pulseaudio"
+brew "espeak"
+brew "shairport-sync"
