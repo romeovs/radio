@@ -33,13 +33,13 @@ See `http.go` for more
 Radio uses PulseAudio. If you are on a non-linux OS you will need to install it, for example via Homebrew:
 
 ```sh
-brew install pulseaudio
+brew bundle
 ```
 
 And start it:
 
 ```sh
-brew services start pulseaudio
+pulseaudio
 ```
 
 ## Configuration
