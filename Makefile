@@ -81,3 +81,7 @@ vet:
 test:
 	@$m "Testing..."
 	@$(GO) test ./...
+
+# Run radio
+run:
+	bin/mac/radio
